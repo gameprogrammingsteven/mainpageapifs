@@ -18,7 +18,7 @@ Real environment variables also work and take precedence.
 ## Next.js
 
 Set `CORS_ORIGINS` (comma-separated, default `http://localhost:3000`) to the Next.js origin(s).
-Alternatively, proxy via a Next.js rewrite (`/api/:path*` -> `http://127.0.0.1:8000/api/:path*`) and CORS isn't needed.
+Alternatively, proxy via a Next.js rewrite (`/toolsapi/v1/:path*` -> `http://127.0.0.1:8000/toolsapi/v1/:path*`) and CORS isn't needed.
 
 ## Routes
 
@@ -27,9 +27,9 @@ Alternatively, proxy via a Next.js rewrite (`/api/:path*` -> `http://127.0.0.1:8
   - Run a single uvicorn worker (limit checks use an in-process lock).
   - The reverse proxy must set `X-Real-IP $remote_addr` and `client_max_body_size 6m`.
 
-- `GET/POST /api/todo`
-- `GET/PUT/DELETE /api/todo/{id}`
-- `GET /health`
-- Docs: `/docs`
+- `GET/POST /toolsapi/v1/todo`
+- `GET/PUT/DELETE /toolsapi/v1/todo/{id}`
+- `GET /toolsapi/v1/health`
+- Docs: `/toolsapi/v1/docs` (also `/redoc`, `/openapi.json` under the same prefix)
 
-Add new route groups as modules in `app/routers/` and register them on the `api` router in `app/main.py`.
+All routes live under `/toolsapi/v1`. Add new route groups as modules in `app/routers/` and register them on the `api` router in `app/main.py`.

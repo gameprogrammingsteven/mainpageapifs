@@ -16,7 +16,15 @@ async def lifespan(_: FastAPI):
     await db.close()
 
 
-app = FastAPI(title="Main Page API", lifespan=lifespan)
+PREFIX = "/toolsapi/v1"
+
+app = FastAPI(
+    title="Main Page API",
+    lifespan=lifespan,
+    docs_url=f"{PREFIX}/docs",
+    redoc_url=f"{PREFIX}/redoc",
+    openapi_url=f"{PREFIX}/openapi.json",
+)
 
 # Comma-separated origins of the Next.js app, e.g. "https://example.com,http://localhost:3000"
 origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",") if o.strip()]
@@ -28,14 +36,12 @@ app.add_middleware(
     expose_headers=["X-Pad-Updated"],
 )
 
-api = APIRouter(prefix="/api")
+api = APIRouter(prefix=PREFIX)
 api.include_router(todo.router)
+api.include_router(tools.router)
 app.include_router(api)
 
-# Pads and temporary file uploads (no database needed)
-app.include_router(tools.router, prefix="/toolsapi/v1")
 
-
-@app.get("/health")
+@app.get(f"{PREFIX}/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
