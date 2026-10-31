@@ -1,16 +1,17 @@
 from bson import ObjectId
 from bson.errors import InvalidId
-from fastapi import APIRouter, HTTPException, status
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel, Field
 from pymongo import ReturnDocument
 
 from app.db import get_db
+from app.ratelimit import rate_limit
 
-router = APIRouter(prefix="/todo", tags=["todo"])
+router = APIRouter(prefix="/todo", tags=["todo"], dependencies=[Depends(rate_limit)])
 
 
 class TodoIn(BaseModel):
-    title: str
+    title: str = Field(min_length=1, max_length=200)
     done: bool = False
 
 

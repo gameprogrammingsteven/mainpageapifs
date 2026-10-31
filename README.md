@@ -32,4 +32,8 @@ Alternatively, proxy via a Next.js rewrite (`/toolsapi/v1/:path*` -> `http://127
 - `GET /toolsapi/v1/health`
 - Docs: `/toolsapi/v1/docs` (also `/redoc`, `/openapi.json` under the same prefix)
 
+Todo routes are rate-limited per client IP (HTTP 429 with `Retry-After`). Tune with env vars
+`RATE_LIMIT_READ` (default 120), `RATE_LIMIT_WRITE` (default 20) and `RATE_LIMIT_WINDOW` (seconds, default 60).
+It relies on the proxy setting `X-Real-IP` and on a single uvicorn worker.
+
 All routes live under `/toolsapi/v1`. Add new route groups as modules in `app/routers/` and register them on the `api` router in `app/main.py`.
